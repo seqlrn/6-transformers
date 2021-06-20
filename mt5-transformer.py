@@ -54,13 +54,12 @@ early_stopping = True
 # sample from dataset, using abstracts as input to generate short summary (~title)
 from IPython.display import HTML, display
 def displaysum(summarize, generated, reference):
-    if 
     display(HTML(f"""<table>
     <tr><td>summarize:</td><td>{summarize}</td></tr>
     <tr><td>generated:</td><td>{generated}</td></tr>
     <tr><td>reference:</td><td>{reference}</td></tr>
     </table>
-    """)
+    """))
 
 for i in [random.randint(0, len(df) - 1) for _ in range(10)]:
     # load the values
@@ -110,8 +109,8 @@ class ThesisDataset(Dataset):
         label_mask = label_tok['attention_mask'].squeeze()
 
         return {
-            'source_ids': input_ids.to(dtype=torch.long), 
-            'source_mask': input_mask.to(dtype=torch.long), 
+            'input_ids': input_ids.to(dtype=torch.long), 
+            'input_mask': input_mask.to(dtype=torch.long), 
             'label_ids': label_ids.to(dtype=torch.long),
             'label_mask': label_mask.to(dtype=torch.long)
         }
@@ -143,10 +142,9 @@ def train(epoch, tokenizer, model, device, loader, optimizer):
         if i % 10 == 0:
             print({"Training Loss": loss.item()})
 
-        if i % 500 == 0:
-            print(f'Epoch: {epoch}, Loss:  {loss.item()}')
-
         # TODO reset optimizer, do backwards pass and optimizer step    
+    
+    print(f'Epoch: {epoch}, Loss:  {loss.item()}')
         
 
 # %%
@@ -212,7 +210,9 @@ dl_vali = DataLoader(ds_vali, shuffle=True, num_workers=0, batch_size=batch_size
 #%%
 
 # we'll start from the same ml6team/mt5-small-german-finetune-mlsum that we
-# used before in our baseline experiment
+# used before in our baseline experiment; we will reload it below so that we
+# maintain the base model
+base = model
 
 # this time, we'll load it explicitly as a T5ForConditionalGeneration; the
 # tokenizer will be the same
@@ -234,8 +234,8 @@ for epoch in range(epochs_train):
     # TODO call the training routine from above
     train(...)
 
-    # save the model after each epoch
-    model.save_pretrained('res/mt5-small-fine-tune-'+epoch)
+    # save the model after each epoch; warning: model size is ~1.2G
+    #model.save_pretrained('res/mt5-small-fine-tune-'+epoch)
 
     if epoch in epochs_vali:
         # TODO call the vali routine from above to generate some summaries
@@ -246,19 +246,29 @@ for epoch in range(epochs_train):
         displaysum(None, generated, reference)
 
 #%%
+
+# save last iteration
+model.save_pretrained('res/mt5-small-fine-tune-theses')
+
+#%%
 # load model and compare outputs
 base = AutoModelForSeq2SeqLM.from_pretrained("ml6team/mt5-small-german-finetune-mlsum")
 fine = model  # or any other checkpoint from res/mt5-small-fine-tune-...
 
 #%%
-# pick some random theses and compare the two models
-thesis_picks = [random.randint(0, len(df) - 1) for _ in range(10)]
+# pick some random theses (from df_vali!) and compare the two models
+thesis_picks = [random.randint(0, len(df_vali) - 1) for _ in range(10)]
 for num, i in enumerate(thesis_picks):
     print()
-    print('summarize: ' + df.iloc[i].Abstract)
+
     # TODO generate a summary with each of the models
     s1 = generate_summary(...)
     s2 = generate_summary(...)
-    print('base: '+s1)
-    print('fine: '+s2)
-    print('title: ' + df.iloc[i].Titel)
+    
+    display(HTML(f"""<table>
+    <tr><td>summarize:</td><td>{df_vali.iloc[i].Abstract}</td></tr>
+    <tr><td>base:</td><td>{s1}</td></tr>
+    <tr><td>fine:</td><td>{s2}</td></tr>
+    <tr><td>reference:</td><td>{df_vali.iloc[i].Titel}</td></tr>
+    </table>
+    """))
