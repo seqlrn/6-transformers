@@ -4,7 +4,7 @@
 ## BERT
 
 To get you warmed up and familiar with some of the libararies, we start out easy with a BERT tutorial from J. Alammar. 
-The tutorial builds a simple sentiment analysis model based on pretrained BERT models with the [HuggingFace Library](huggingface.co/). 
+The tutorial builds a simple sentiment analysis model based on pretrained BERT models with the [HuggingFace Library](https://huggingface.co/). 
 It will get you familiarized with the libary and make the next exercise a bit easier. 
 The tutorial has nice graphics and visualizations and will increase your general understanding of transformers and especially the BERT model even more. 
 
