@@ -10,13 +10,17 @@ The tutorial has nice graphics and visualizations and will increase your general
 
 [Link to the tutorial](https://jalammar.github.io/a-visual-guide-to-using-bert-for-the-first-time/)
 ## wav2vec 2.0 for keyword recognition
-This exercise is a bit more advanced and you will be mostly on your own.
+After the warm-up with BERT, this exercise is a bit more advanced and you will be mostly on your own.
+
+The task in this exercise is to build a keyword recognition system based on wav2vec 2.0. 
 There are a couple of options you will have to think about and decide which implementation path you want to follow.
 
-For this exercise please use the [speech-commands-dataset](https://ai.googleblog.com/2017/08/launching-speech-commands-dataset.html) from google.
-You can also use the [HuggingFace api](https://huggingface.co/datasets/speech_commands) to get the data or use [torchaudio](https://pytorch.org/audio/stable/_modules/torchaudio/datasets/speechcommands.html).
+For this exercise please use the [speech-commands-dataset](https://ai.googleblog.com/2017/08/launching-speech-commands-dataset.html) from google to train and evaluate your keyword recognition systems.
+The data can also be obtained using the 
+[HuggingFace api](https://huggingface.co/datasets/speech_commands) or you can use [torchaudio](https://pytorch.org/audio/stable/_modules/torchaudio/datasets/speechcommands.html).
 
-There are a couple of options, that will lead to differnt performance on this problem. They vary in complexity as well as performance. 
+There are a couple of options, that will lead to differnt performance on this problem. They vary in complexity as well as performance.
+You should be able to reason the desing and implementation choices you made.
 
 Choose one the options that suits you best or the one that you think might yield the best performance.
 1. What model will you use? ```BASE vs. LARGE``` and what pretrained weights ```ASR vs BASE```, ```XLSR53 vs ENGLISH```?
